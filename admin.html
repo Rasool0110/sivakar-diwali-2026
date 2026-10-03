@@ -1,6 +1,26 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><title>Sivakar — Shop Admin</title><style>
 :root{--bg:#fff8ef;--card:#fff;--text:#24160d;--muted:#7b6b5d;--line:#ead8c4;--soft:#fff0dc;--ok:#16834a;--warn:#b56a00;--bad:#c62828}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}header{background:linear-gradient(135deg,#7f190c,#d94801,#f59e0b);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}.wrap{max-width:1250px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{margin:0;font-size:23px}.sub{font-size:12px;opacity:.9}button,input,select{font:inherit}button{cursor:pointer}.nav button,.secondary,.save{border-radius:10px;padding:9px 12px;font-weight:800}.nav button,.secondary{border:1px solid var(--line);background:#fff;color:var(--text)}main{padding:16px}.banner{background:#fff3d8;border:1px solid #e7c98b;padding:12px;border-radius:12px;margin-bottom:14px;font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.stat,.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}.stat b{font-size:24px;display:block}.stat span{color:var(--muted);font-size:12px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}input,select{border:1px solid var(--line);background:#fff;padding:9px;border-radius:9px;color:var(--text)}#search{flex:1;min-width:220px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{border-collapse:collapse;width:100%;min-width:1100px}th,td{padding:9px;border-bottom:1px solid #f0e4d7;text-align:left;font-size:12px;vertical-align:middle}th{background:var(--soft);position:sticky;top:0;z-index:2}.product{font-weight:800}.muted{color:var(--muted);font-size:11px}.edit{width:90px}.computed{font-weight:800}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.save{border:0;background:#16834a;color:#fff}.toast{position:fixed;right:16px;bottom:16px;background:#24160d;color:#fff;padding:12px 15px;border-radius:12px;display:none;z-index:20}@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}h1{font-size:19px}main{padding:10px}}
-</style></head><body><header><div class="wrap top"><div><h1>🎆 SIVAKAR — SHOP OWNER</h1><div class="sub">Inventory • Units • Prices • Diwali 2026</div></div><div class="nav"><button onclick="location.href='index.html'">← Customer Store</button></div></div></header><main class="wrap"><div id="banner" class="banner">Connecting to database…</div><div class="stats"><div class="stat"><b>225</b><span>Products</span></div><div class="stat"><b id="totalBoxes">—</b><span>Total box equivalent</span></div><div class="stat"><b id="lowCount">0</b><span>Low stock</span></div><div class="stat"><b id="outCount">0</b><span>Out of stock</span></div></div><div class="panel"><div class="toolbar"><input id="search" placeholder="Search product…"><select id="cat"><option value="">All categories</option><option>Sparklers</option><option>One Sound Crackers</option><option>Bijili Crackers</option><option>Gold Bijli</option><option>Digital Lar/Digital Shower</option><option>Rockets</option><option>Multi Colour Special Shower</option><option>Mud Pot</option><option>Multi Function Novalties</option><option>Musical Novelties</option><option>Peacock Series</option><option>Party Attraction</option><option>New Arrival</option><option>Bombs</option><option>Toys</option><option>Pencils</option><option>Mega Candles</option><option>Twinkling Star</option><option>Ground Chakkar</option><option>Wheel Series Window Pack</option><option>Flower Pots</option><option>Flower Pots (Window Box)</option><option>Chotta Fancy 1 1/4&quot; Pipe</option><option>2&quot; Pipe Commet Single Pack</option><option>2&quot; Pipe (3 Pcs Packing)</option><option>2 1/2&quot; Pipe Commet Single</option><option>Night Attraction 3 1/2&quot; Pipe (Single PC Packing)</option><option>3 1/2&quot; Pipe Aerial Attraction Special</option><option>4&quot; Pipe Mega Aerial</option><option>5&quot; Pipe Mega Aerial</option><option>Repeating Shots</option><option>Multi Colour Shots (Premium)</option><option>Repeating Shots (Economy)</option><option>Display Shots</option><option>Musical Shots Whistling</option></select><button class="secondary" id="reload">Reload</button></div><div class="muted" style="margin-bottom:10px">Editable: <b>No. of Boxes</b>, <b>Units per Box</b>, and <b>Per Box Price</b>. Calculated: Internal Units and Per Piece Price.</div><div class="tablewrap"><table><thead><tr><th>#</th><th>Product</th><th>Boxes</th><th>Units / Box</th><th>Internal Units</th><th>Per Box Price ₹</th><th>Per Piece Price ₹</th><th>Availability</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></div></main><div id="toast" class="toast"></div><script>
+</style></head><body><div id="loginScreen" style="position:fixed;inset:0;background:#fff8ef;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="width:100%;max-width:400px;background:#fff;border:1px solid #ead8c4;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.08)">
+    <h2 style="margin-top:0">🔐 Sivakar Admin Login</h2>
+    <p style="color:#7b6b5d;font-size:13px">Shop owner access only.</p>
+
+    <label>Email</label>
+    <input id="loginEmail" type="email" placeholder="Admin email" style="width:100%;margin:6px 0 12px">
+
+    <label>Password</label>
+    <input id="loginPassword" type="password" placeholder="Password" style="width:100%;margin:6px 0 12px">
+
+    <button id="loginBtn" class="save" style="width:100%;padding:11px">
+      Login
+    </button>
+
+    <div id="loginError" style="color:#c62828;font-size:13px;margin-top:12px"></div>
+  </div>
+</div><header><div class="wrap top"><div><h1>🎆 SIVAKAR — SHOP OWNER</h1><div class="sub">Inventory • Units • Prices • Diwali 2026</div></div><div class="nav">
+  <button onclick="location.href='index.html'">← Customer Store</button>
+  <button onclick="logout()">Logout</button>
+</div></div></header><main class="wrap"><div id="banner" class="banner">Connecting to database…</div><div class="stats"><div class="stat"><b>225</b><span>Products</span></div><div class="stat"><b id="totalBoxes">—</b><span>Total box equivalent</span></div><div class="stat"><b id="lowCount">0</b><span>Low stock</span></div><div class="stat"><b id="outCount">0</b><span>Out of stock</span></div></div><div class="panel"><div class="toolbar"><input id="search" placeholder="Search product…"><select id="cat"><option value="">All categories</option><option>Sparklers</option><option>One Sound Crackers</option><option>Bijili Crackers</option><option>Gold Bijli</option><option>Digital Lar/Digital Shower</option><option>Rockets</option><option>Multi Colour Special Shower</option><option>Mud Pot</option><option>Multi Function Novalties</option><option>Musical Novelties</option><option>Peacock Series</option><option>Party Attraction</option><option>New Arrival</option><option>Bombs</option><option>Toys</option><option>Pencils</option><option>Mega Candles</option><option>Twinkling Star</option><option>Ground Chakkar</option><option>Wheel Series Window Pack</option><option>Flower Pots</option><option>Flower Pots (Window Box)</option><option>Chotta Fancy 1 1/4&quot; Pipe</option><option>2&quot; Pipe Commet Single Pack</option><option>2&quot; Pipe (3 Pcs Packing)</option><option>2 1/2&quot; Pipe Commet Single</option><option>Night Attraction 3 1/2&quot; Pipe (Single PC Packing)</option><option>3 1/2&quot; Pipe Aerial Attraction Special</option><option>4&quot; Pipe Mega Aerial</option><option>5&quot; Pipe Mega Aerial</option><option>Repeating Shots</option><option>Multi Colour Shots (Premium)</option><option>Repeating Shots (Economy)</option><option>Display Shots</option><option>Musical Shots Whistling</option></select><button class="secondary" id="reload">Reload</button></div><div class="muted" style="margin-bottom:10px">Editable: <b>No. of Boxes</b>, <b>Units per Box</b>, and <b>Per Box Price</b>. Calculated: Internal Units and Per Piece Price.</div><div class="tablewrap"><table><thead><tr><th>#</th><th>Product</th><th>Boxes</th><th>Units / Box</th><th>Internal Units</th><th>Per Box Price ₹</th><th>Per Piece Price ₹</th><th>Availability</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></div></div></main><div id="toast" class="toast"></div><script>
 let products=[];let db=null;
 function money(v){return '₹'+Number(v||0).toFixed(2)}
 function toast(s){let e=document.getElementById('toast');e.textContent=s;e.style.display='block';setTimeout(()=>e.style.display='none',1800)}
@@ -9,5 +29,68 @@ function render(){let q=document.getElementById('search').value.toLowerCase(),c=
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 async function load(){if(!isSupabaseConfigured()){document.getElementById('banner').textContent='Database not configured. Fill supabase-config.js with your Supabase URL and anon key, then reload.';return}db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let {data,error}=await db.rpc('product_view');if(error){document.getElementById('banner').textContent='Database error: '+error.message;return}products=data||[];document.getElementById('banner').textContent='Connected to Supabase. Changes are shared with the customer page.';render()}
 async function saveProduct(id){let p=products.find(x=>x.id===id);let boxes=Math.max(0,Math.floor(Number(document.getElementById('b-'+id).value)||0));let upb=Math.max(1,Math.floor(Number(document.getElementById('u-'+id).value)||0));let price=Math.max(0,Number(document.getElementById('p-'+id).value)||0);if(!db){toast('Connect Supabase first');return}let r=await db.rpc('set_units_per_box',{p_id:id,p_units:upb});if(r.error){toast(r.error.message);return}r=await db.rpc('set_stock_boxes',{p_id:id,p_boxes:boxes});if(r.error){toast(r.error.message);return}r=await db.rpc('set_box_price',{p_id:id,p_price:price});if(r.error){toast(r.error.message);return}await load();toast('Product updated')}
-document.getElementById('search').oninput=render;document.getElementById('cat').onchange=render;document.getElementById('reload').onclick=load;load();
+async function login(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const password=document.getElementById('loginPassword').value;
+
+  if(!email || !password){
+    document.getElementById('loginError').textContent='Enter email and password.';
+    return;
+  }
+
+  if(!isSupabaseConfigured()){
+    document.getElementById('loginError').textContent='Supabase is not configured.';
+    return;
+  }
+
+  db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+  const {error}=await db.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if(error){
+    document.getElementById('loginError').textContent=error.message;
+    return;
+  }
+
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('loginError').textContent='';
+  load();
+}
+
+async function logout(){
+  if(db) await db.auth.signOut();
+  location.reload();
+}
+
+async function checkAdminLogin(){
+  if(!isSupabaseConfigured()){
+    document.getElementById('loginError').textContent='Supabase is not configured.';
+    return;
+  }
+
+  db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+  const {data}=await db.auth.getSession();
+
+  if(data.session){
+    document.getElementById('loginScreen').style.display='none';
+
+    document.getElementById('search').oninput=render;
+    document.getElementById('cat').onchange=render;
+    document.getElementById('reload').onclick=load;
+
+    load();
+  }
+}
+
+document.getElementById('loginBtn').onclick=login;
+
+document.getElementById('loginPassword').addEventListener('keydown',function(e){
+  if(e.key==='Enter') login();
+});
+
+checkAdminLogin();
 </script></body></html>
