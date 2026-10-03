@@ -16,6 +16,87 @@ function updateTotal(){let t=0;for(let [id,x] of cart){let p=products.find(y=>y.
 function populate(){let cats=[...new Set(products.map(p=>p.category))];document.getElementById('category').innerHTML='<option value=\"\">All categories</option>'+cats.map(c=>`<option>${esc(c)}</option>`).join('');document.getElementById('tabs').innerHTML=`<button class=\"tab active\" onclick=\"chooseCat('')\">All</button>`+cats.map(c=>`<button class=\"tab\" onclick=\"chooseCat('${encodeURIComponent(c)}')\">${esc(c)}</button>`).join('')}
 function chooseCat(c){activeCategory=decodeURIComponent(c);document.getElementById('category').value=activeCategory;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));render()}
 async function load(){if(!isSupabaseConfigured()){document.getElementById('banner').textContent='Database not configured. Fill supabase-config.js first.';return}db=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let {data,error}=await db.rpc('product_view');if(error){document.getElementById('banner').textContent='Database error: '+error.message;return}products=data||[];populate();render();updateTotal();document.getElementById('banner').textContent='Live catalogue connected to Supabase. Stock and prices come from the shop database.'}
-async function placeOrder(){let items=[...cart.entries()].filter(([id,x])=>x.qty>0).map(([id,x])=>({id,qty:x.qty,unit:x.unit}));if(!items.length){alert('Add at least one item.');return}let name=document.getElementById('customerName').value.trim(),phone=document.getElementById('customerPhone').value.trim();if(!name||!phone){alert('Please enter name and phone.');return}let total=0;items.forEach(i=>{let p=products.find(x=>x.id===i.id);total+=i.qty*(i.unit==='BOX'?p.box_price:p.box_price/p.units_per_box)});let {data,error}=await db.rpc('place_order',{p_customer_name:name,p_customer_phone:phone,p_address:document.getElementById('address').value,p_notes:document.getElementById('notes').value,p_items:items,p_total:total});if(error){alert(error.message);await load();return}let orderNo=data;let msg=`Sivakar Order ${orderNo}%0AName: ${encodeURIComponent(name)}%0APhone: ${encodeURIComponent(phone)}%0ATotal: ${encodeURIComponent(money(total))}`;cart.clear();await load();if(SHOP.whatsapp)window.open('https://wa.me/'+SHOP.whatsapp+'?text='+msg,'_blank');else alert('Order placed successfully. Order ID: '+orderNo);}
-document.getElementById('search').oninput=render;document.getElementById('category').onchange=e=>{activeCategory=e.target.value;render()};load();
+async function placeOrder(){
+  let items=[...cart.entries()]
+    .filter(([id,x])=>x.qty>0)
+    .map(([id,x])=>({id,qty:x.qty,unit:x.unit}));
+
+  if(!items.length){
+    alert('Add at least one item.');
+    return;
+  }
+
+  let name=document.getElementById('customerName').value.trim();
+  let phone=document.getElementById('customerPhone').value.trim();
+
+  if(!name||!phone){
+    alert('Please enter name and phone.');
+    return;
+  }
+
+  let total=0;
+
+  items.forEach(i=>{
+    let p=products.find(x=>x.id===i.id);
+    total+=i.qty*(i.unit==='BOX'
+      ? p.box_price
+      : p.box_price/p.units_per_box);
+  });
+
+  let {data,error}=await db.rpc('place_order',{
+    p_customer_name:name,
+    p_customer_phone:phone,
+    p_address:document.getElementById('address').value,
+    p_notes:document.getElementById('notes').value,
+    p_items:items,
+    p_total:total
+  });
+
+  if(error){
+    alert(error.message);
+    await load();
+    return;
+  }
+
+  let orderNo=data;
+
+  let message=`Sivakar Diwali Order
+Order No: ${orderNo}
+Name: ${name}
+Phone: ${phone}
+
+Items:`;
+
+  items.forEach(i=>{
+    let p=products.find(x=>x.id===i.id);
+    let unitPrice=i.unit==='BOX'
+      ? p.box_price
+      : p.box_price/p.units_per_box;
+
+    message+=`
+${p.name} - ${i.qty} ${i.unit} @ ${money(unitPrice)}`;
+  });
+
+  message+=`
+
+Total: ${money(total)}
+Address: ${document.getElementById('address').value.trim() || 'Not provided'}
+Notes: ${document.getElementById('notes').value.trim() || 'None'}`;
+
+  cart.clear();
+  await load();
+
+  let shopNumber =
+    (typeof SHOP !== 'undefined' && SHOP.whatsapp)
+      ? SHOP.whatsapp
+      : '918885909297';
+
+  let whatsappUrl =
+    'https://wa.me/' +
+    shopNumber +
+    '?text=' +
+    encodeURIComponent(message);
+
+  window.open(whatsappUrl,'_blank');
+}document.getElementById('search').oninput=render;document.getElementById('category').onchange=e=>{activeCategory=e.target.value;render()};load();
 </script></body></html>
